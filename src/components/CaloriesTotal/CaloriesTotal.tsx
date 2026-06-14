@@ -11,6 +11,10 @@ const CaloriesTotal = () => {
         const getMeal = async () => {
             const { data } = await axiosApi.get<Meal[] | null>('/meal.json')
 
+            if (!data) {
+                return
+            }
+
             const totalCalories = Object.keys(data).reduce(
                 (sum, key) => sum + data[key].calories,
                 0

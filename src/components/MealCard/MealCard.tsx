@@ -10,12 +10,17 @@ const MealCard = () => {
         const getMeal = async () => {
             const { data } = await axiosApi.get<Meal[] | null>('/meal.json')
 
+            if (!data) {
+                return
+            }
+
             const mealList: Meal[] = Object.keys(data).map(key => {
                 return {
                     id: key,
-                    food: data[key].food,
+                    description: data[key].food,
                     calories: data[key].calories,
                     time: data[key].time,
+                    type: data[key].type,
                 }
             });
             setMeal(mealList);
@@ -23,29 +28,34 @@ const MealCard = () => {
         void getMeal();
     }, []);
 
+    const deleteMeal = async (id: string) => {
+        await axiosApi.delete(`/meal/${id}.json`)
+        setMeal(prev => prev.filter(m => m.id !== id));
+    }
+
     return meal && (
-        <>
+        <div className='container mt-5 d-flex flex-column-reverse'>
             {meal.map(m => (
                 <div key={m.id} className="card shadow-sm border-0 mb-3">
                     <div className="card-body d-flex justify-content-between align-items-center">
 
                         <div>
-                            <h6 className="text-secondary mb-1">{m.id}</h6>
-                            <h5 className="card-title mb-3 ">{m.food}</h5>
+                            <h6 className="text-secondary mb-1">{m.type}</h6>
+                            <h5 className="card-title mb-3 ">{m.description}</h5>
                             <small className="text-secondary">
                                 {new Date(m.time).toLocaleString()}
                             </small>
                         </div>
 
                         <div className="d-flex align-items-center gap-3">
-                            <span className="fw-bold fs-5">{m.calories}</span>
+                            <span className="fw-bold fs-5">{m.calories} kcal</span>
 
                             <div className="d-flex flex-column gap-2">
                                 <button className="btn btn-outline-secondary btn-sm">
                                     <i className="bi bi-pencil"></i>
                                 </button>
 
-                                <button className="btn btn-outline-danger btn-sm">
+                                <button onClick={() => deleteMeal(m.id)} className="btn btn-outline-danger btn-sm">
                                     <i className="bi bi-trash"></i>
                                 </button>
                             </div>
@@ -54,7 +64,7 @@ const MealCard = () => {
                     </div>
                 </div>
             ))}
-        </>
+        </div>
     );
 };
 

@@ -1,6 +1,13 @@
 export interface Meal {
-    food: string
+    description: string
     calories: number
     id: string
-    time: string
+    time: number
+    type: string
+}
+
+export interface AddMeal {
+    description: string
+    calories: number
+    type: string
 }
