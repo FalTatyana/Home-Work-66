@@ -1,6 +1,8 @@
 import { useEffect, useState } from "react"
 import axiosApi from "../AxiosApi/AxiosApi"
 import type { Meal } from "../../types"
+import { NavLink } from "react-router-dom";
+import { toast } from "react-toastify";
 
 const MealCard = () => {
 
@@ -17,7 +19,7 @@ const MealCard = () => {
             const mealList: Meal[] = Object.keys(data).map(key => {
                 return {
                     id: key,
-                    description: data[key].food,
+                    description: data[key].description,
                     calories: data[key].calories,
                     time: data[key].time,
                     type: data[key].type,
@@ -31,6 +33,7 @@ const MealCard = () => {
     const deleteMeal = async (id: string) => {
         await axiosApi.delete(`/meal/${id}.json`)
         setMeal(prev => prev.filter(m => m.id !== id));
+        toast.info("Meal deleted");
     }
 
     return meal && (
@@ -51,9 +54,9 @@ const MealCard = () => {
                             <span className="fw-bold fs-5">{m.calories} kcal</span>
 
                             <div className="d-flex flex-column gap-2">
-                                <button className="btn btn-outline-secondary btn-sm">
+                                <NavLink to={`/edit-meal/${m.id}`} className="btn btn-outline-secondary btn-sm">
                                     <i className="bi bi-pencil"></i>
-                                </button>
+                                </NavLink>
 
                                 <button onClick={() => deleteMeal(m.id)} className="btn btn-outline-danger btn-sm">
                                     <i className="bi bi-trash"></i>

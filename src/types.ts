@@ -1,13 +1,13 @@
 export interface Meal {
     description: string
-    calories: number
+    calories: string
     id: string
-    time: number
+    time: string
     type: string
 }
 
 export interface AddMeal {
     description: string
-    calories: number
+    calories: string
     type: string
 }
